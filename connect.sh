@@ -56,4 +56,3 @@ do
 done
 
 echo $PORT > "$PORT_CACHE_FILE"
-scrcpy --tcpip=${CONNECTED_ADDRESS} $SCRCPY_ARGS
