@@ -16,10 +16,6 @@ function getValue() {
     fi
 }
 
-PORT=$1
-PAIR_PORT=$2
-PAIR_CODE=$3
-
 if [ "$PORT_CACHE_FILE" != "" ]; then
     if [ "$PORT" == "" ]; then
         if [ -e "$PORT_CACHE_FILE" ]; then
