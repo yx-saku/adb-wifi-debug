@@ -5,14 +5,14 @@ function getValue() {
     local -n VAR=$2
 
     if [ "$VAR" == "" ]; then
-        read -p "$MSG()" INPUT
+        read -p "$MSG：" INPUT
         if [[ $INPUT == "exit" ]]; then
             echo "終了"
             exit 0
         fi
         VAR=$INPUT
     else
-        echo "$MSG${VAR}"
+        echo "$MSG：${VAR}"
     fi
 }
 
