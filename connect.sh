@@ -57,4 +57,6 @@ do
     fi
 done
 
-echo $PORT > "$PORT_CACHE_FILE"
+if [ "$PORT_CACHE_FILE" != "" ]; then
+    echo $PORT > "$PORT_CACHE_FILE"
+fi
