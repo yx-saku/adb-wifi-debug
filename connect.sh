@@ -52,6 +52,9 @@ do
     adb connect ${ADDRESS}:${PORT}
 
     CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
+    if [ "$CONNECTED_ADDRESS" == "" ]; then
+        PORT=
+    fi
 done
 
 echo $PORT > "$PORT_CACHE_FILE"
