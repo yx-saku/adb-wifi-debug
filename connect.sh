@@ -28,31 +28,30 @@ getValue "IPアドレス" ADDRESS
 
 while [ "$CONNECTED_ADDRESS" == "" ];
 do
-    getValue "ポート" PORT
+    getValue "ポート（ペアリングする場合はpairと入力）" PORT
+
+    if [ "$PORT" == "pair" ]; then
+        PORT=
+
+        ret=
+        while ! echo $ret | grep "Successfully paired";
+        do
+            getValue "ペア設定ポート" PAIR_PORT
+            getValue "ペア設定コード" PAIR_CODE
+
+            ret=$(adb pair ${ADDRESS}:${PAIR_PORT} $PAIR_CODE)
+            echo $ret
+
+            PAIR_PORT=
+            PAIR_CODE=
+        done
+
+        continue
+    fi
 
     adb connect ${ADDRESS}:${PORT}
 
     CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
-    if [ "$CONNECTED_ADDRESS" == "" ]; then
-        if [ "$PAIRED" == "true" ]; then
-            PORT=
-        else
-            ret=
-            while ! echo $ret | grep "Successfully paired";
-            do
-                getValue "ペア設定ポート" PAIR_PORT
-                getValue "ペア設定コード" PAIR_CODE
-
-                ret=$(adb pair ${ADDRESS}:${PAIR_PORT} $PAIR_CODE)
-                echo $ret
-
-                PAIR_PORT=
-                PAIR_CODE=
-            done
-
-            PAIRED=true
-        fi
-    fi
 done
 
 echo $PORT > "$PORT_CACHE_FILE"
