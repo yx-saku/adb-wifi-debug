@@ -35,6 +35,7 @@ do
     echo "2. ポート"
     echo "3. ペアリング"
     echo "4. 接続を試す"
+    echo "5. 中断"
     getValue "選択" MODE
 
     if [ "$MODE" == "1" ]; then
@@ -61,6 +62,8 @@ do
     elif [ "$MODE" == "4" ]; then
         adb connect ${ADDRESS}:${PORT}
         CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
+    elif [ "$MODE" == "5" ]; then
+        exit
     fi
 done
 
