@@ -44,7 +44,7 @@ do
         getValue "ポート" PORT
     elif [ "$MODE" == "3" ]; then
         ret=
-        while ! echo $ret | grep "Successfully paired";
+        while ! echo $ret | grep "Successfully paired" > /dev/null;
         do
             getValue "ペア設定ポート" PAIR_PORT
             getValue "ペア設定コード" PAIR_CODE
