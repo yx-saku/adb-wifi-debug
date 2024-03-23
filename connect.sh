@@ -29,6 +29,7 @@ CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
 
 while [ "$CONNECTED_ADDRESS" == "" ];
 do
+    MODE=
     echo "何を入力するか選択してください。"
     echo "1. IPアドレス"
     echo "2. ポート"
