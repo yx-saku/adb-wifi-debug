@@ -63,6 +63,7 @@ do
     fi
 done
 
-if [ "$PORT_CACHE_FILE" != "" ]; then
-    echo $PORT > "$PORT_CACHE_FILE"
+if [ "$CACHE_FILE" != "" ]; then
+    echo ADDRESS=$ADDRESS > "$CACHE_FILE"
+    echo PORT=$PORT >> "$CACHE_FILE"
 fi
