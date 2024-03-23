@@ -24,13 +24,23 @@ if [ "$PORT_CACHE_FILE" != "" ]; then
     fi
 fi
 
-getValue "IPアドレス" ADDRESS
+adb connect ${ADDRESS}:${PORT}
+CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
 
 while [ "$CONNECTED_ADDRESS" == "" ];
 do
-    getValue "ポート（ペアリングする場合はpairと入力）" PORT
+    echo "何を入力するか選択してください。"
+    echo "1. IPアドレス"
+    echo "2. ポート"
+    ehco "3. ペアリング"
+    ehco "4. 接続を試す"
+    getValue "IPアドレス" MODE
 
-    if [ "$PORT" == "pair" ]; then
+    if [ "$MODE" == "1" ];
+        getValue "IPアドレス" ADDRESS
+    elif [ "$MODE" == "2" ];
+        getValue "ポート" PORT
+    elif [ "$MODE" == "3" ];
         PORT=
 
         ret=
@@ -47,13 +57,9 @@ do
         done
 
         continue
-    fi
-
-    adb connect ${ADDRESS}:${PORT}
-
-    CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
-    if [ "$CONNECTED_ADDRESS" == "" ]; then
-        PORT=
+    elif [ "$MODE" == "4" ];
+        adb connect ${ADDRESS}:${PORT}
+        CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
     fi
 done
 
