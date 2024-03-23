@@ -16,11 +16,9 @@ function getValue() {
     fi
 }
 
-if [ "$PORT_CACHE_FILE" != "" ]; then
-    if [ "$PORT" == "" ]; then
-        if [ -e "$PORT_CACHE_FILE" ]; then
-            PORT=$(cat "$PORT_CACHE_FILE")
-        fi
+if [ "$CACHE_FILE" != "" ]; then
+    if [ -e "$CACHE_FILE" ]; then
+        source "$CACHE_FILE"
     fi
 fi
 
@@ -32,7 +30,7 @@ do
     MODE=
     echo "選択してください。"
     echo -n "1. IPアドレス"; [ $ADDRESS != "" ] && echo "（現在の値：$ADDRESS）"
-    echo -n "2. ポート"; [ $PORT != "" ] && echo "（現在の値：$PORT"
+    echo -n "2. ポート"; [ $PORT != "" ] && echo "（現在の値：$PORT）"
     echo "3. ペアリング"
     echo "4. 接続を試す"
     echo "5. 中断"
