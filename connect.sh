@@ -32,17 +32,17 @@ do
     echo "何を入力するか選択してください。"
     echo "1. IPアドレス"
     echo "2. ポート"
-    ehco "3. ペアリング"
-    ehco "4. 接続を試す"
-    getValue "IPアドレス" MODE
+    echo "3. ペアリング"
+    echo "4. 接続を試す"
+    getValue "選択" MODE
 
     if [ "$MODE" == "1" ]; then
+        ADDRESS=
         getValue "IPアドレス" ADDRESS
     elif [ "$MODE" == "2" ]; then
+        PORT=
         getValue "ポート" PORT
     elif [ "$MODE" == "3" ]; then
-        PORT=
-
         ret=
         while ! echo $ret | grep "Successfully paired";
         do
