@@ -36,11 +36,11 @@ do
     ehco "4. 接続を試す"
     getValue "IPアドレス" MODE
 
-    if [ "$MODE" == "1" ];
+    if [ "$MODE" == "1" ]; then
         getValue "IPアドレス" ADDRESS
-    elif [ "$MODE" == "2" ];
+    elif [ "$MODE" == "2" ]; then
         getValue "ポート" PORT
-    elif [ "$MODE" == "3" ];
+    elif [ "$MODE" == "3" ]; then
         PORT=
 
         ret=
@@ -57,7 +57,7 @@ do
         done
 
         continue
-    elif [ "$MODE" == "4" ];
+    elif [ "$MODE" == "4" ]; then
         adb connect ${ADDRESS}:${PORT}
         CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
     fi
