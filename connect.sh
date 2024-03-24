@@ -29,8 +29,8 @@ while [ "$CONNECTED_ADDRESS" == "" ];
 do
     MODE=
     echo "選択してください。（exitを入力で中断）"
-    echo -n "1. IPアドレス"; [ "$ADDRESS" != "" ] && echo "（現在の値：$ADDRESS）"
-    echo -n "2. ポート"; [ "$PORT" != "" ] && echo "（現在の値：$PORT）"
+    echo -n "1. IPアドレス"; [ "$ADDRESS" != "" ] && echo "（現在の値：$ADDRESS）" || echo 
+    echo -n "2. ポート"; [ "$PORT" != "" ] && echo "（現在の値：$PORT）" || echo 
     echo "3. ペアリング"
     echo "4. 接続を試す"
     getValue "選択" MODE
