@@ -16,14 +16,31 @@ function getValue() {
     fi
 }
 
+function getPort() {
+    ADDRESS=$1
+
+    PORT=$(nmap $ADDRESS -p 37000-46000 -T4 | awk "/\/tcp/" | cut -d/ -f1)
+    echo "ポート自動検出 $PORT"
+}
+
 if [ "$CACHE_FILE" != "" ]; then
     if [ -e "$CACHE_FILE" ]; then
         source "$CACHE_FILE"
     fi
 fi
 
-adb connect ${ADDRESS}:${PORT}
-CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
+if [ "$ADDRESS" != "" ]; then
+    if [ "$PORT" != "" ]; then
+        adb connect ${ADDRESS}:${PORT}
+        CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
+    fi
+
+    if [ "$CONNECTED_ADDRESS" == "" ]; then
+        PORT=$(getPort $ADDRESS | awk '{ print $2 }')
+        adb connect ${ADDRESS}:${PORT}
+        CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
+    fi
+fi
 
 while [ "$CONNECTED_ADDRESS" == "" ];
 do
@@ -32,12 +49,15 @@ do
     echo -n "1. IPアドレス"; [ "$ADDRESS" != "" ] && echo "（現在の値：$ADDRESS）" || echo 
     echo -n "2. ポート"; [ "$PORT" != "" ] && echo "（現在の値：$PORT）" || echo 
     echo "3. ペアリング"
-    echo "4. 接続を試す"
     getValue "選択" MODE
 
     if [ "$MODE" == "1" ]; then
         ADDRESS=
         getValue "IPアドレス" ADDRESS
+        TMP_PORT=$(getPort $ADDRESS | awk '{ print $2 }')
+        if [ "$TMP_PORT" != "" ]; then
+            PORT=$TMP_PORT
+        fi
     elif [ "$MODE" == "2" ]; then
         PORT=
         getValue "ポート" PORT
@@ -54,17 +74,15 @@ do
             PAIR_PORT=
             PAIR_CODE=
         done
+    fi
 
-        continue
-    elif [ "$MODE" == "4" ]; then
+    if [ "$CACHE_FILE" != "" ]; then
+        echo ADDRESS=$ADDRESS > "$CACHE_FILE"
+        echo PORT=$PORT >> "$CACHE_FILE"
+    fi
+
+    if [ "$ADDRESS" != "" ] && [ "$PORT" != "" ]; then
         adb connect ${ADDRESS}:${PORT}
         CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
-    elif [ "$MODE" == "5" ]; then
-        exit
     fi
 done
-
-if [ "$CACHE_FILE" != "" ]; then
-    echo ADDRESS=$ADDRESS > "$CACHE_FILE"
-    echo PORT=$PORT >> "$CACHE_FILE"
-fi
