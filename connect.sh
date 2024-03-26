@@ -59,7 +59,7 @@ do
 
         TMP_PORT=$PORT
         getPort
-        if [ "$PORT" != "" ]; then
+        if [ "$PORT" == "" ]; then
             PORT=$TMP_PORT
         fi
 
