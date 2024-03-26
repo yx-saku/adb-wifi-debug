@@ -17,10 +17,14 @@ function getValue() {
 }
 
 function getPort() {
-    ADDRESS=$1
+    echo -n "ポート自動検出($ADDRESS)... "
+    PORT=$(nmap $ADDRESS -p 37000-46000 -T4 | awk "/\/tcp/" | cut -d/ -f1)
+    echo $PORT
+}
 
-    echo -n "ポート自動検出... "
-    nmap $ADDRESS -p 37000-46000 -T4 | awk "/\/tcp/" | cut -d/ -f1
+function connect {
+    adb connect ${ADDRESS}:${PORT}
+    CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
 }
 
 if [ "$CACHE_FILE" != "" ]; then
@@ -31,14 +35,12 @@ fi
 
 if [ "$ADDRESS" != "" ]; then
     if [ "$PORT" != "" ]; then
-        adb connect ${ADDRESS}:${PORT}
-        CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
+        connect
     fi
 
     if [ "$CONNECTED_ADDRESS" == "" ]; then
-        PORT=$(getPort $ADDRESS | awk '{ print $2 }')
-        adb connect ${ADDRESS}:${PORT}
-        CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
+        getPort
+        connect
     fi
 fi
 
@@ -54,13 +56,17 @@ do
     if [ "$MODE" == "1" ]; then
         ADDRESS=
         getValue "IPアドレス" ADDRESS
-        TMP_PORT=$(getPort $ADDRESS | awk '{ print $2 }')
-        if [ "$TMP_PORT" != "" ]; then
+
+        TMP_PORT=$PORT
+        getPort
+        if [ "$PORT" != "" ]; then
             PORT=$TMP_PORT
         fi
+
     elif [ "$MODE" == "2" ]; then
         PORT=
         getValue "ポート" PORT
+
     elif [ "$MODE" == "3" ]; then
         ret=
         while ! echo $ret | grep "Successfully paired" > /dev/null;
@@ -76,13 +82,12 @@ do
         done
     fi
 
-    if [ "$CACHE_FILE" != "" ]; then
-        echo ADDRESS=$ADDRESS > "$CACHE_FILE"
-        echo PORT=$PORT >> "$CACHE_FILE"
-    fi
-
     if [ "$ADDRESS" != "" ] && [ "$PORT" != "" ]; then
-        adb connect ${ADDRESS}:${PORT}
-        CONNECTED_ADDRESS=$(adb devices -l | grep $ADDRESS:$PORT | awk '{ print $1 }')
+        connect
     fi
 done
+
+if [ "$CACHE_FILE" != "" ]; then
+    echo ADDRESS=$ADDRESS > "$CACHE_FILE"
+    echo PORT=$PORT >> "$CACHE_FILE"
+fi
