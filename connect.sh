@@ -19,8 +19,8 @@ function getValue() {
 function getPort() {
     ADDRESS=$1
 
-    PORT=$(nmap $ADDRESS -p 37000-46000 -T4 | awk "/\/tcp/" | cut -d/ -f1)
-    echo "ポート自動検出 $PORT"
+    echo -n "ポート自動検出... "
+    nmap $ADDRESS -p 37000-46000 -T4 | awk "/\/tcp/" | cut -d/ -f1
 }
 
 if [ "$CACHE_FILE" != "" ]; then
