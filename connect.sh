@@ -18,7 +18,7 @@ function getValue() {
 
 function getPort() {
     echo -n "ポート自動検出($ADDRESS)... "
-    PORT=$(nmap $ADDRESS -p 37000-46000 -T4 | awk "/\/tcp/" | cut -d/ -f1)
+    PORT=$(nmap $ADDRESS -p 35000-46000 -T4 | awk "/\/tcp/" | cut -d/ -f1)
     echo $PORT
 }
 
