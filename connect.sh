@@ -37,11 +37,6 @@ if [ "$ADDRESS" != "" ]; then
     if [ "$PORT" != "" ]; then
         connect
     fi
-
-    if [ "$CONNECTED_ADDRESS" == "" ]; then
-        getPort
-        connect
-    fi
 fi
 
 while [ "$CONNECTED_ADDRESS" == "" ];
@@ -51,6 +46,7 @@ do
     echo -n "1. IPアドレス"; [ "$ADDRESS" != "" ] && echo "（現在の値：$ADDRESS）" || echo 
     echo -n "2. ポート"; [ "$PORT" != "" ] && echo "（現在の値：$PORT）" || echo 
     echo "3. ペアリング"
+    echo "4. 接続を試す"
     getValue "選択" MODE
 
     if [ "$MODE" == "1" ]; then
@@ -80,10 +76,10 @@ do
             PAIR_PORT=
             PAIR_CODE=
         done
-    fi
-
-    if [ "$ADDRESS" != "" ] && [ "$PORT" != "" ]; then
-        connect
+    elif [ "$MODE" == "4" ]; then
+        if [ "$ADDRESS" != "" ] && [ "$PORT" != "" ]; then
+            connect
+        fi
     fi
 done
 

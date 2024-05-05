@@ -1,13 +1,20 @@
+x-common: &common
+  build: .
+  environment:
+    - ADDRESS=
+    - CACHE_FILE=/cache_file
+  volumes:
+    - ./cache_file:/cache_file
+    - ./connect.sh:/connect.sh
+  tty: true
+  stdin_open: true
+  privileged: true
+  network_mode: host
+
 services:
   test:
-    build: .
-    environment:
-      - ADDRESS=
-      - CACHE_FILE=/cache_file
-    volumes:
-      - ./cache_file:/cache_file
-      - ./connect.sh:/connect.sh
-    tty: true
-    stdin_open: true
-    privileged: true
-    network_mode: host
+    <<: *common
+
+  bash:
+    <<: *common
+    entrypoint: /bin/bash
